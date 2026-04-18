@@ -318,10 +318,26 @@ async function callAI(system, messages, model, json = false) {
     console.log('[Closure.exe] Response OK');
     
     // Extract text from Gemini response
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    if (!text) throw new Error('Empty API response');
+    let text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+    if (!text) {
+        console.error('[Closure.exe] Full response:', JSON.stringify(data));
+        const blockReason = data?.candidates?.[0]?.finishReason;
+        if (blockReason === 'SAFETY') throw new Error('Response blocked by safety filter. Try rephrasing.');
+        if (blockReason === 'RECITATION') throw new Error('Response blocked (recitation). Try a different message.');
+        throw new Error('Empty API response. Try again.');
+    }
     
-    return json ? JSON.parse(text) : text;
+    if (json) {
+        // Strip markdown code fences Gemini sometimes wraps JSON in (`` ```json ... ``` ``)
+        text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error('[Closure.exe] JSON parse failed. Raw:', text);
+            throw new Error('AI returned malformed JSON. Try again.');
+        }
+    }
+    return text;
 }
 
 /* ═══════════════════════════════════════════
@@ -409,7 +425,7 @@ async function referee(userMsg, exMsg) {
         ], CFG.MODEL_FAST, true);
         applyScores(scores);
         showRef(scores);
-    } catch (e) { console.warn('Referee err', e); }
+    } catch (e) { console.warn('Referee err', e); toast('⚖️ Referee error: ' + e.message); }
 }
 
 /* ═══════════════════════════════════════════
