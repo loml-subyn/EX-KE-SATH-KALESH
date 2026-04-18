@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closure.exe - Powered by Google Gemini</title>
+    <meta name="description" content="Win the argument you never had. A gamified AI argument simulator powered by Google Gemini.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+</head>
+
+<body>
+
+    <!-- ══════ DECEPTIVE LOADING SCREEN ══════ -->
+    <div id="loading-screen" class="loading-screen active">
+        <div class="loading-container">
+            <div class="loading-header">
+                <div class="loading-icon">⏳</div>
+                <h2 class="loading-title">closure.exe</h2>
+                <p class="loading-subtitle">Loading argument engine...</p>
+            </div>
+
+            <div class="trivia-box">
+                <div class="trivia-label">💡 Did You Know?</div>
+                <p id="trivia-text" class="trivia-text">The plural of "octopus" is actually "octopodes"...</p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progress-percent">0%</span>
+                    <span class="progress-status" id="progress-status">Initializing...</span>
+                </div>
+            </div>
+
+            <div class="loading-message" id="loading-message">
+                Preparing your toxic ex for maximum pettiness...
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ LANDING ══════ -->
+    <div id="landing" class="view active">
+        <div class="landing-inner">
+            <div class="brand">
+                <div class="brand-icon">💔</div>
+                <h1 class="brand-name">closure<span class="brand-ext">.exe</span></h1>
+                <p class="brand-tagline">Win the argument you never had.</p>
+            </div>
+
+            <div class="setup-card">
+                <label class="field-label" for="api-key">Google Gemini API Key</label>
+                <div class="key-row">
+                    <input type="password" id="api-key" placeholder="AIza..." autocomplete="off" spellcheck="false">
+                    <button id="toggle-key" class="icon-btn" title="Show/hide">👁</button>
+                </div>
+                <a href="https://ai.google.dev/aistudio/signup" target="_blank" rel="noopener" class="helper-link">Get a key from Google AI Studio →</a>
+            </div>
+
+            <button id="start-btn" class="btn-primary">Start Arguing ⚡</button>
+
+            <nav class="landing-nav">
+                <button id="go-scanner" class="btn-ghost">🚩 Red Flag Scanner</button>
+                <button id="go-hall" class="btn-ghost">🏆 Hall of Shame</button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- ══════ GAME ══════ -->
+    <div id="game" class="view">
+        <!-- Top bar -->
+        <header class="topbar">
+            <button id="btn-back" class="icon-btn" title="Exit">✕</button>
+            <div class="salt-wrap">
+                <span class="salt-label">🧂 SALT</span>
+                <div class="salt-track">
+                    <div id="salt-bar" class="salt-fill"></div>
+                </div>
+                <span id="salt-pct" class="salt-pct">0%</span>
+            </div>
+            <div class="topbar-actions">
+                <button id="btn-mute" class="icon-btn" title="Mute">🔊</button>
+                <button id="btn-export" class="icon-btn" title="Screenshot">📸</button>
+            </div>
+        </header>
+
+        <div class="game-grid">
+            <!-- Chat column -->
+            <main class="chat-col">
+                <div class="chat-bar">
+                    <span class="chat-avatar">😈</span>
+                    <div>
+                        <div class="chat-name">Your Toxic Ex</div>
+                        <div class="chat-status" id="chat-status">online</div>
+                    </div>
+                </div>
+
+                <div class="messages" id="messages">
+                    <div class="sys-msg">
+                        <p>💀 <strong>The argument begins now.</strong></p>
+                        <p class="sub">Say what you always wanted to. The referee is watching.</p>
+                    </div>
+                </div>
+
+                <div class="compose">
+                    <button id="btn-hint" class="icon-btn hint-btn" title="Get comeback hint">💡</button>
+                    <textarea id="msg-input" rows="1" maxlength="500"
+                        placeholder="Say what you wish you'd said..."></textarea>
+                    <button id="btn-send" class="send-btn" title="Send">➤</button>
+                </div>
+            </main>
+
+            <!-- Scores column -->
+            <aside class="score-col" id="score-col">
+                <h2 class="score-heading">Scoreboard</h2>
+
+                <div class="stat-card">
+                    <div class="stat-label">🛡 Gaslight Resistance</div>
+                    <div class="stat-value" id="s-gaslight">0</div>
+                    <div class="stat-bar">
+                        <div id="bar-gaslight" class="stat-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">😤 Pettiness Multiplier</div>
+                    <div class="stat-value accent-orange" id="s-petty">1.0×</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">🚪 Closure</div>
+                    <div class="closure-stages" id="closure-stages">
+                        <span class="stg on">Denial</span>
+                        <span class="stg">Anger</span>
+                        <span class="stg">Bargain</span>
+                        <span class="stg">Sad</span>
+                        <span class="stg">Accept</span>
+                        <span class="stg">DONE</span>
+                    </div>
+                    <div class="stat-bar">
+                        <div id="bar-closure" class="stat-bar-fill green"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">💖 Dignity</div>
+                    <div id="dignity-hearts" class="hearts">❤️❤️❤️❤️❤️</div>
+                    <div class="dignity-pen" id="dignity-pen">0</div>
+                </div>
+
+                <div class="stat-card total-card">
+                    <div class="stat-label">⭐ Total</div>
+                    <div class="stat-value total-val" id="s-total">0</div>
+                </div>
+
+                <div class="meta-row">
+                    <span>Round <span id="round-num">0</span></span>
+                    <span id="timer">00:00</span>
+                </div>
+
+                <button id="btn-end" class="btn-outline">🏳 End Session</button>
+            </aside>
+        </div>
+
+        <!-- Referee toast -->
+        <div id="referee" class="ref-card hidden">
+            <div class="ref-head">⚖️ <span>REFEREE</span></div>
+            <div class="ref-scores">
+                <div class="ref-s"><span class="ref-lbl">Savage</span><span class="ref-val" id="r-savage">0</span>/10
+                </div>
+                <div class="ref-s"><span class="ref-lbl">Maturity</span><span class="ref-val" id="r-mature">0</span>/10
+                </div>
+            </div>
+            <p class="ref-comment" id="r-comment">—</p>
+            <p class="ref-fallacy hidden" id="r-fallacy"></p>
+            <button id="ref-close" class="btn-ghost sm">Dismiss</button>
+        </div>
+
+        <!-- Hints Modal -->
+        <div id="modal-hints" class="modal hidden">
+            <div class="modal-bg dismiss"></div>
+            <div class="modal-box">
+                <h3 class="modal-title">💡 Comeback Options</h3>
+                <div id="hint-high" class="hint-card">
+                    <div class="hint-tag">🕊 High Road</div>
+                    <div class="hint-body">Loading…</div>
+                </div>
+                <div id="hint-low" class="hint-card">
+                    <div class="hint-tag">😈 Low Road</div>
+                    <div class="hint-body">Loading…</div>
+                </div>
+                <div id="hint-nuke" class="hint-card">
+                    <div class="hint-tag">💣 Nuclear</div>
+                    <div class="hint-body">Loading…</div>
+                </div>
+                <button id="hints-close" class="btn-ghost sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════ SCANNER ══════ -->
+    <div id="scanner" class="view">
+        <header class="topbar simple">
+            <button id="scanner-back" class="icon-btn">←</button>
+            <h2 class="topbar-title">🚩 Red Flag Scanner</h2>
+            <div></div>
+        </header>
+        <div class="scanner-body">
+            <p class="scanner-desc">Paste their messages. The AI will highlight every red flag.</p>
+            <textarea id="scanner-input" class="scanner-ta" placeholder="Paste messages here…"></textarea>
+            <button id="btn-scan" class="btn-primary full">🔍 Scan</button>
+            <div id="scan-results" class="scan-results hidden"></div>
+        </div>
+    </div>
+
+    <!-- ══════ HALL OF SHAME ══════ -->
+    <div id="hall" class="view">
+        <header class="topbar simple">
+            <button id="hall-back" class="icon-btn">←</button>
+            <h2 class="topbar-title">🏆 Hall of Shame</h2>
+            <div></div>
+        </header>
+        <div class="hall-body">
+            <div id="hall-list" class="hall-list">
+                <div class="empty-state">🦗<br>No arguments yet.</div>
+            </div>
+            <button id="btn-clear-hall" class="btn-ghost sm danger hidden">Clear all</button>
+        </div>
+    </div>
+
+    <!-- ══════ DISCLAIMER ══════ -->
+    <div id="modal-disclaimer" class="modal hidden">
+        <div class="modal-bg"></div>
+        <div class="modal-box narrow">
+            <div class="modal-icon">⚠️</div>
+            <h3 class="modal-title">Before We Begin</h3>
+            <div class="disc-text">
+                <p><strong>This is a parody game</strong>, not a substitute for therapy.</p>
+                <p>🧠 If you're struggling, please talk to a professional or call <strong>988</strong>.</p>
+                <p>🔒 Messages go to OpenAI's API and are <strong>not stored</strong> by us.</p>
+            </div>
+            <label class="check-row">
+                <input type="checkbox" id="disc-check">
+                <span>I understand this is unhinged</span>
+            </label>
+            <button id="disc-ok" class="btn-primary full" disabled>Let me argue</button>
+        </div>
+    </div>
+
+    <!-- ══════ TOUCH GRASS ══════ -->
+    <div id="modal-grass" class="modal hidden">
+        <div class="modal-bg"></div>
+        <div class="modal-box narrow center">
+            <div class="modal-icon big">🌿</div>
+            <h3 class="modal-title">Touch Grass Protocol</h3>
+            <p class="grass-msg">You've been arguing with a robot for <strong>15 minutes</strong>.<br>Go outside. They
+                aren't worth it.</p>
+            <p class="grass-cd">Dismiss in <span id="grass-cd">10</span>s</p>
+            <button id="grass-ok" class="btn-primary full" disabled>I have unfinished business</button>
+        </div>
+    </div>
+
+    <!-- ══════ END SESSION ══════ -->
+    <div id="modal-end" class="modal hidden">
+        <div class="modal-bg dismiss"></div>
+        <div class="modal-box narrow center">
+            <div class="modal-icon">🏁</div>
+            <h3 class="modal-title">Session Over</h3>
+            <div id="final-stats" class="final-grid"></div>
+            <button id="btn-save-quit" class="btn-primary full">Save to Hall of Shame</button>
+            <button id="btn-just-quit" class="btn-ghost sm">Just leave</button>
+        </div>
+    </div>
+
+    <!-- hidden canvas for export -->
+    <canvas id="export-canvas" style="display:none"></canvas>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
