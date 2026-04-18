@@ -7,7 +7,7 @@
 // Example: 'AIzaSyDxxx...'
 
 const CONFIG = {
-    GEMINI_API_KEY: 'AIzaSyDBPzj2EfgeTXqqEMktyQMwv7ol0KPFCvw',  // ← Paste your API key here
+    GEMINI_API_KEY: 'AIzaSyB2HToTtHk1P5TkkgnaLFR7ld1QBnR81ws',  // ← Paste your API key here
     USE_HARDCODED_KEY: true  // Set to true to use the hardcoded key above, false to use landing page input
 };
 
